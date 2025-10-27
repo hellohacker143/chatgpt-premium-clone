@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Search & Play</title>
+  <title>Calendar-Based YouTube Search</title>
   <style>
     * {
       margin: 0;
@@ -24,15 +24,37 @@
       color: #ff0000;
       margin-bottom: 20px;
     }
-    .search-box {
+    .search-controls {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       margin-bottom: 30px;
     }
-    #searchInput {
+    .date-options {
+      margin-bottom: 15px;
+    }
+    .date-options label {
+      margin: 0 10px;
+      font-size: 14px;
+    }
+    .date-inputs {
+      margin: 15px 0;
+    }
+    .date-inputs input, .date-inputs select {
+      padding: 8px;
+      margin: 5px;
+      font-size: 14px;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+    }
+    #topicInput {
       width: 70%;
       padding: 12px;
       font-size: 16px;
       border: 2px solid #ccc;
       border-radius: 4px;
+      margin: 10px 0;
     }
     #searchBtn {
       padding: 12px 24px;
@@ -42,7 +64,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      margin-left: 10px;
+      margin-top: 10px;
     }
     #searchBtn:hover {
       background: #cc0000;
@@ -86,48 +108,138 @@
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🎬 YouTube Search & Play</h1>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search YouTube videos..." />
-      <button id="searchBtn">Search</button>
+    <h1>📅 Calendar-Based YouTube Search</h1>
+    <div class="search-controls">
+      <div class="date-options">
+        <label>
+          <input type="radio" name="dateFilter" value="today" checked>
+          Today (Last 24 hours)
+        </label>
+        <label>
+          <input type="radio" name="dateFilter" value="date">
+          Specific Date
+        </label>
+        <label>
+          <input type="radio" name="dateFilter" value="year">
+          Year
+        </label>
+      </div>
+      
+      <div class="date-inputs">
+        <input type="date" id="specificDate" class="hidden">
+        <select id="yearSelect" class="hidden">
+          <option value="2024">2024</option>
+          <option value="2023" selected>2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+          <option value="2019">2019</option>
+          <option value="2018">2018</option>
+          <option value="2017">2017</option>
+          <option value="2016">2016</option>
+          <option value="2015">2015</option>
+        </select>
+      </div>
+      
+      <input type="text" id="topicInput" placeholder="Enter topic to search...">
+      <button id="searchBtn">Search Videos</button>
     </div>
+    
     <div class="results" id="results"></div>
     <div id="player"></div>
   </div>
 
   <script>
     const API_KEY = 'AIzaSyBrkLUjSB2vamhcdeXWHZsf-cZBkQ-LkPg';
-    const searchInput = document.getElementById('searchInput');
+    const topicInput = document.getElementById('topicInput');
     const searchBtn = document.getElementById('searchBtn');
     const resultsDiv = document.getElementById('results');
     const playerDiv = document.getElementById('player');
+    const specificDateInput = document.getElementById('specificDate');
+    const yearSelect = document.getElementById('yearSelect');
+    const dateRadios = document.querySelectorAll('input[name="dateFilter"]');
+
+    // Show/hide date inputs based on selection
+    dateRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        specificDateInput.classList.add('hidden');
+        yearSelect.classList.add('hidden');
+        
+        if (radio.value === 'date') {
+          specificDateInput.classList.remove('hidden');
+        } else if (radio.value === 'year') {
+          yearSelect.classList.remove('hidden');
+        }
+      });
+    });
 
     searchBtn.addEventListener('click', searchVideos);
-    searchInput.addEventListener('keypress', (e) => {
+    topicInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') searchVideos();
     });
 
+    function getDateFilter() {
+      const selected = document.querySelector('input[name="dateFilter"]:checked').value;
+      const now = new Date();
+      
+      if (selected === 'today') {
+        const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        return {
+          publishedAfter: yesterday.toISOString(),
+          publishedBefore: now.toISOString()
+        };
+      } else if (selected === 'date') {
+        const dateValue = specificDateInput.value;
+        if (!dateValue) {
+          alert('Please select a specific date');
+          return null;
+        }
+        const startDate = new Date(dateValue);
+        const endDate = new Date(dateValue);
+        endDate.setDate(endDate.getDate() + 1);
+        return {
+          publishedAfter: startDate.toISOString(),
+          publishedBefore: endDate.toISOString()
+        };
+      } else if (selected === 'year') {
+        const year = yearSelect.value;
+        return {
+          publishedAfter: `${year}-01-01T00:00:00Z`,
+          publishedBefore: `${year}-12-31T23:59:59Z`
+        };
+      }
+    }
+
     async function searchVideos() {
-      const query = searchInput.value.trim();
-      if (!query) return;
+      const query = topicInput.value.trim();
+      if (!query) {
+        alert('Please enter a topic');
+        return;
+      }
+
+      const dateFilter = getDateFilter();
+      if (!dateFilter) return;
 
       resultsDiv.innerHTML = '<p>Loading...</p>';
       playerDiv.innerHTML = '';
 
       try {
-        const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(query)}&type=video&key=${API_KEY}`
-        );
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(query)}&type=video&publishedAfter=${dateFilter.publishedAfter}&publishedBefore=${dateFilter.publishedBefore}&key=${API_KEY}`;
+        
+        const response = await fetch(url);
         const data = await response.json();
 
         if (data.items && data.items.length > 0) {
           displayResults(data.items);
         } else {
-          resultsDiv.innerHTML = '<p>No results found.</p>';
+          resultsDiv.innerHTML = '<p>No results found for the selected date range.</p>';
         }
       } catch (error) {
         resultsDiv.innerHTML = '<p>Error loading results. Please try again.</p>';
