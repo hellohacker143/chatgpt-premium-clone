@@ -1,186 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calendar-Based YouTube Search</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      padding: 20px;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    h1 {
-      color: #ff0000;
-      margin-bottom: 20px;
-    }
-    .quick-topics {
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .topic-btn {
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: bold;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    .topic-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .topic-btn:nth-child(1) {
-      background: linear-gradient(135deg, #10a37f 0%, #0d8a6b 100%);
-    }
-    .topic-btn:nth-child(2) {
-      background: linear-gradient(135deg, #1fb6ff 0%, #0d8abf 100%);
-    }
-    .topic-btn:nth-child(3) {
-      background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);
-    }
-    .topic-btn:nth-child(4) {
-      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    }
-    .search-controls {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
-    }
-    .date-options {
-      margin-bottom: 15px;
-    }
-    .date-options label {
-      margin: 0 10px;
-      font-size: 14px;
-    }
-    .date-inputs {
-      margin: 15px 0;
-    }
-    .date-inputs input, .date-inputs select {
-      padding: 8px;
-      margin: 5px;
-      font-size: 14px;
-      border: 2px solid #ccc;
-      border-radius: 4px;
-    }
-    #topicInput {
-      width: 70%;
-      padding: 12px;
-      font-size: 16px;
-      border: 2px solid #ccc;
-      border-radius: 4px;
-      margin: 10px 0;
-    }
-    #searchBtn {
-      padding: 12px 24px;
-      font-size: 16px;
-      background: #ff0000;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    #searchBtn:hover {
-      background: #cc0000;
-    }
-    .results {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-    .video-item {
-      background: white;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .video-item:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .video-item img {
-      width: 100%;
-      border-radius: 4px;
-    }
-    .video-item h3 {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #333;
-      text-align: left;
-    }
-    #player {
-      margin-top: 30px;
-    }
-    #player iframe {
-      width: 100%;
-      max-width: 800px;
-      height: 450px;
-      border: none;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .hidden {
-      display: none;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; text-align: center; }
+    h1 { color: #ff0000; margin-bottom: 20px; }
+
+    .quick-topics { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .topic-btn, .range-btn { padding: 12px 20px; font-size: 14px; font-weight: bold; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .topic-btn:hover, .range-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+    .topic-btn:nth-child(1) { background: linear-gradient(135deg, #10a37f 0%, #0d8a6b 100%); }
+    .topic-btn:nth-child(2) { background: linear-gradient(135deg, #1fb6ff 0%, #0d8abf 100%); }
+    .topic-btn:nth-child(3) { background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%); }
+    .topic-btn:nth-child(4) { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+
+    .search-controls { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px; }
+    .date-options { margin-bottom: 12px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .date-options label { margin: 0 6px; font-size: 14px; }
+    .quick-ranges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+
+    .date-inputs { margin: 15px 0; }
+    .date-inputs input, .date-inputs select { padding: 8px; margin: 5px; font-size: 14px; border: 2px solid #ccc; border-radius: 4px; }
+    #topicInput { width: 70%; padding: 12px; font-size: 16px; border: 2px solid #ccc; border-radius: 4px; margin: 10px 0; }
+    #searchBtn { padding: 12px 24px; font-size: 16px; background: #ff0000; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+    #searchBtn:hover { background: #cc0000; }
+
+    .results { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .video-item { background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; }
+    .video-item:hover { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+    .video-item img { width: 100%; border-radius: 4px; }
+    .video-item h3 { margin-top: 10px; font-size: 14px; color: #333; text-align: left; }
+    #player { margin-top: 30px; }
+    #player iframe { width: 100%; max-width: 800px; height: 450px; border: none; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>📅 Calendar-Based YouTube Search</h1>
-    
+
     <div class="quick-topics">
       <button class="topic-btn" data-topic="ChatGPT Updates">ChatGPT Updates</button>
       <button class="topic-btn" data-topic="Perplexity Updates">Perplexity Updates</button>
       <button class="topic-btn" data-topic="Gemini Updates">Gemini Updates</button>
       <button class="topic-btn" data-topic="Comedy Telugu">Comedy Telugu</button>
     </div>
-    
+
     <div class="search-controls">
+      <div class="quick-ranges">
+        <button class="range-btn" data-range="today">Today (Last 24 hours)</button>
+        <button class="range-btn" data-range="yesterday">Yesterday</button>
+        <button class="range-btn" data-range="thisweek">This Week</button>
+      </div>
+
       <div class="date-options">
         <label>
-          <input type="radio" name="dateFilter" value="today" checked>
-          Today (Last 24 hours)
+          <input name="dateFilter" type="radio" value="today" checked /> Today (Last 24 hours)
         </label>
         <label>
-          <input type="radio" name="dateFilter" value="date">
-          Specific Date
+          <input name="dateFilter" type="radio" value="date" /> Specific Date
         </label>
         <label>
-          <input type="radio" name="dateFilter" value="year">
-          Year
+          <input name="dateFilter" type="radio" value="year" /> Year
         </label>
       </div>
-      
+
       <div class="date-inputs">
-        <input type="date" id="specificDate" class="hidden">
+        <input id="specificDate" class="hidden" type="date" />
         <select id="yearSelect" class="hidden">
+          <option value="2025">2025</option>
           <option value="2024">2024</option>
           <option value="2023" selected>2023</option>
           <option value="2022">2022</option>
@@ -193,14 +85,15 @@
           <option value="2015">2015</option>
         </select>
       </div>
-      
-      <input type="text" id="topicInput" placeholder="Enter topic to search...">
+
+      <input id="topicInput" type="text" placeholder="Enter topic to search..." />
       <button id="searchBtn">Search Videos</button>
     </div>
-    
+
     <div id="results" class="results"></div>
     <div id="player"></div>
   </div>
+
   <script>
     const API_KEY = 'AIzaSyBrkLUjSB2vamhcdeXWHZsf-cZBkQ-LkPg';
     const topicInput = document.getElementById('topicInput');
@@ -211,124 +104,121 @@
     const yearSelect = document.getElementById('yearSelect');
     const dateRadios = document.querySelectorAll('input[name="dateFilter"]');
     const topicBtns = document.querySelectorAll('.topic-btn');
-    
-    // Quick topic buttons functionality
+    const rangeBtns = document.querySelectorAll('.range-btn');
+
+    // Quick topic buttons functionality (last 3 days as before)
     topicBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const topic = btn.dataset.topic;
         topicInput.value = topic;
-        // Set to last 3 days
         searchLast3Days(topic);
       });
     });
-    
+
+    // Quick range buttons: Today, Yesterday, This Week
+    rangeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const range = btn.dataset.range;
+        const query = topicInput.value.trim() || 'news';
+        const { publishedAfter, publishedBefore } = getQuickRange(range);
+        resultsDiv.innerHTML = '<p>Loading...</p>';
+        playerDiv.innerHTML = '';
+        fetchVideos(query, { publishedAfter, publishedBefore });
+      });
+    });
+
+    function getQuickRange(range) {
+      const now = new Date();
+      if (range === 'today') {
+        const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        return { publishedAfter: yesterday.toISOString(), publishedBefore: now.toISOString() };
+      }
+      if (range === 'yesterday') {
+        const end = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // today at 00:00
+        const start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+        return { publishedAfter: start.toISOString(), publishedBefore: end.toISOString() };
+      }
+      if (range === 'thisweek') {
+        const day = now.getDay(); // 0 Sun .. 6 Sat
+        const diffToMonday = (day === 0 ? -6 : 1 - day); // Monday start
+        const monday = new Date(now);
+        monday.setHours(0,0,0,0);
+        monday.setDate(now.getDate() + diffToMonday);
+        return { publishedAfter: monday.toISOString(), publishedBefore: now.toISOString() };
+      }
+      return { publishedAfter: new Date(now.getTime()-24*60*60*1000).toISOString(), publishedBefore: now.toISOString() };
+    }
+
     function searchLast3Days(query) {
       resultsDiv.innerHTML = '<p>Loading...</p>';
       playerDiv.innerHTML = '';
-      
       const now = new Date();
       const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-      
-      const dateFilter = {
-        publishedAfter: threeDaysAgo.toISOString(),
-        publishedBefore: now.toISOString()
-      };
-      
+      const dateFilter = { publishedAfter: threeDaysAgo.toISOString(), publishedBefore: now.toISOString() };
       fetchVideos(query, dateFilter);
     }
-    
+
     // Show/hide date inputs based on selection
     dateRadios.forEach(radio => {
       radio.addEventListener('change', () => {
         specificDateInput.classList.add('hidden');
         yearSelect.classList.add('hidden');
-        
-        if (radio.value === 'date') {
-          specificDateInput.classList.remove('hidden');
-        } else if (radio.value === 'year') {
-          yearSelect.classList.remove('hidden');
-        }
+        if (radio.value === 'date') { specificDateInput.classList.remove('hidden'); }
+        else if (radio.value === 'year') { yearSelect.classList.remove('hidden'); }
       });
     });
-    
+
     searchBtn.addEventListener('click', searchVideos);
-    topicInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') searchVideos();
-    });
-    
+    topicInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchVideos(); });
+
     function getDateFilter() {
       const selected = document.querySelector('input[name="dateFilter"]:checked').value;
       const now = new Date();
-      
       if (selected === 'today') {
         const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-        return {
-          publishedAfter: yesterday.toISOString(),
-          publishedBefore: now.toISOString()
-        };
+        return { publishedAfter: yesterday.toISOString(), publishedBefore: now.toISOString() };
       } else if (selected === 'date') {
         const dateValue = specificDateInput.value;
-        if (!dateValue) {
-          alert('Please select a specific date');
-          return null;
-        }
+        if (!dateValue) { alert('Please select a specific date'); return null; }
         const startDate = new Date(dateValue);
         const endDate = new Date(dateValue);
         endDate.setDate(endDate.getDate() + 1);
-        return {
-          publishedAfter: startDate.toISOString(),
-          publishedBefore: endDate.toISOString()
-        };
+        return { publishedAfter: startDate.toISOString(), publishedBefore: endDate.toISOString() };
       } else if (selected === 'year') {
         const year = yearSelect.value;
-        return {
-          publishedAfter: `${year}-01-01T00:00:00Z`,
-          publishedBefore: `${year}-12-31T23:59:59Z`
-        };
+        return { publishedAfter: `${year}-01-01T00:00:00Z`, publishedBefore: `${year}-12-31T23:59:59Z` };
       }
     }
-    
+
     async function searchVideos() {
       const query = topicInput.value.trim();
-      if (!query) {
-        alert('Please enter a topic');
-        return;
-      }
-      
+      if (!query) { alert('Please enter a topic'); return; }
       const dateFilter = getDateFilter();
       if (!dateFilter) return;
-      
       resultsDiv.innerHTML = '<p>Loading...</p>';
       playerDiv.innerHTML = '';
-      
       fetchVideos(query, dateFilter);
     }
-    
+
     async function fetchVideos(query, dateFilter) {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(query)}&type=video&publishedAfter=${dateFilter.publishedAfter}&publishedBefore=${dateFilter.publishedBefore}&key=${API_KEY}`;
-        
         const response = await fetch(url);
         const data = await response.json();
-        
-        if (data.items && data.items.length > 0) {
-          displayResults(data.items);
-        } else {
-          resultsDiv.innerHTML = '<p>No results found for the selected date range.</p>';
-        }
+        if (data.items && data.items.length > 0) { displayResults(data.items); }
+        else { resultsDiv.innerHTML = '<p>No results found for the selected date range.</p>'; }
       } catch (error) {
         resultsDiv.innerHTML = '<p>Error loading results. Please try again.</p>';
         console.error('Error:', error);
       }
     }
-    
+
     function displayResults(videos) {
       resultsDiv.innerHTML = '';
       videos.forEach(video => {
         const videoId = video.id.videoId;
         const title = video.snippet.title;
         const thumbnail = video.snippet.thumbnails.medium.url;
-        
         const videoItem = document.createElement('div');
         videoItem.className = 'video-item';
         videoItem.innerHTML = `
@@ -339,13 +229,10 @@
         resultsDiv.appendChild(videoItem);
       });
     }
-    
+
     function playVideo(videoId) {
       playerDiv.innerHTML = `
-        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-        </iframe>
+        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       `;
       playerDiv.scrollIntoView({ behavior: 'smooth' });
     }
