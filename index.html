@@ -12,7 +12,7 @@
         <!-- Registration Page -->
         <div id="register-page" class="auth-page active">
             <div class="auth-card">
-                <h1>Create Account</h1>
+                <h2>Create Account</h2>
                 <form id="register-form">
                     <input type="text" id="reg-username" placeholder="Username" required>
                     <input type="email" id="reg-email" placeholder="Email" required>
@@ -27,7 +27,7 @@
         <!-- Login Page -->
         <div id="login-page" class="auth-page">
             <div class="auth-card">
-                <h1>Welcome Back</h1>
+                <h2>Welcome Back</h2>
                 <form id="login-form">
                     <input type="email" id="login-email" placeholder="Email" required>
                     <input type="password" id="login-password" placeholder="Password" required>
@@ -38,6 +38,7 @@
             </div>
         </div>
     </div>
+
     <!-- Main App Container -->
     <div id="app-container" class="app-container hidden">
         <!-- Sidebar -->
@@ -56,6 +57,7 @@
                 <button id="logout-btn" class="logout-btn">Logout</button>
             </div>
         </aside>
+
         <!-- Main Content -->
         <main class="main-content">
             <!-- Chat Interface -->
@@ -73,6 +75,7 @@
                     <button id="send-btn" class="send-btn">Send</button>
                 </div>
             </div>
+
             <!-- Google Search Interface -->
             <div id="google-search" class="search-interface hidden">
                 <div class="search-header">
@@ -86,6 +89,7 @@
                     <iframe id="google-iframe" class="search-iframe" style="display:none;" frameborder="0"></iframe>
                 </div>
             </div>
+
             <!-- YouTube Search Interface -->
             <div id="youtube-search" class="search-interface hidden">
                 <div class="search-header">
@@ -103,14 +107,34 @@
                     <div id="youtube-search-results"></div>
                 </div>
             </div>
+
+            <!-- Browser Tab Interface (NEW!) -->
+            <div id="browser-tab" class="search-interface hidden">
+                <div class="search-header">
+                    <h2>Universal Browser</h2>
+                </div>
+                <div class="browser-controls">
+                    <input type="text" id="browser-input" placeholder="Enter URL or search term...">
+                    <button id="browser-go-btn" class="premium-btn">Go</button>
+                    <button id="browser-back-btn" class="premium-btn">← Back</button>
+                    <button id="browser-forward-btn" class="premium-btn">Forward →</button>
+                    <button id="browser-refresh-btn" class="premium-btn">⟳ Refresh</button>
+                </div>
+                <div id="browser-results" class="search-results">
+                    <iframe id="browser-iframe" class="search-iframe" frameborder="0"></iframe>
+                </div>
+            </div>
         </main>
+
         <!-- Navigation Bar -->
         <nav class="bottom-nav">
             <button class="nav-btn active" data-view="chat">💬 Chat</button>
             <button class="nav-btn" data-view="google">🔍 Google</button>
             <button class="nav-btn" data-view="youtube">▶️ YouTube</button>
+            <button class="nav-btn" data-view="browser">🌐 Browser</button>
         </nav>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
