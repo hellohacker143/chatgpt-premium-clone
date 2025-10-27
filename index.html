@@ -24,6 +24,44 @@
       color: #ff0000;
       margin-bottom: 20px;
     }
+    .quick-topics {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .topic-btn {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .topic-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .topic-btn:nth-child(1) {
+      background: linear-gradient(135deg, #10a37f 0%, #0d8a6b 100%);
+    }
+    .topic-btn:nth-child(2) {
+      background: linear-gradient(135deg, #1fb6ff 0%, #0d8abf 100%);
+    }
+    .topic-btn:nth-child(3) {
+      background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);
+    }
+    .topic-btn:nth-child(4) {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    }
     .search-controls {
       background: white;
       padding: 20px;
@@ -116,6 +154,14 @@
 <body>
   <div class="container">
     <h1>📅 Calendar-Based YouTube Search</h1>
+    
+    <div class="quick-topics">
+      <button class="topic-btn" data-topic="ChatGPT Updates">ChatGPT Updates</button>
+      <button class="topic-btn" data-topic="Perplexity Updates">Perplexity Updates</button>
+      <button class="topic-btn" data-topic="Gemini Updates">Gemini Updates</button>
+      <button class="topic-btn" data-topic="Comedy Telugu">Comedy Telugu</button>
+    </div>
+    
     <div class="search-controls">
       <div class="date-options">
         <label>
@@ -152,10 +198,9 @@
       <button id="searchBtn">Search Videos</button>
     </div>
     
-    <div class="results" id="results"></div>
+    <div id="results" class="results"></div>
     <div id="player"></div>
   </div>
-
   <script>
     const API_KEY = 'AIzaSyBrkLUjSB2vamhcdeXWHZsf-cZBkQ-LkPg';
     const topicInput = document.getElementById('topicInput');
@@ -165,7 +210,33 @@
     const specificDateInput = document.getElementById('specificDate');
     const yearSelect = document.getElementById('yearSelect');
     const dateRadios = document.querySelectorAll('input[name="dateFilter"]');
-
+    const topicBtns = document.querySelectorAll('.topic-btn');
+    
+    // Quick topic buttons functionality
+    topicBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const topic = btn.dataset.topic;
+        topicInput.value = topic;
+        // Set to last 3 days
+        searchLast3Days(topic);
+      });
+    });
+    
+    function searchLast3Days(query) {
+      resultsDiv.innerHTML = '<p>Loading...</p>';
+      playerDiv.innerHTML = '';
+      
+      const now = new Date();
+      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+      
+      const dateFilter = {
+        publishedAfter: threeDaysAgo.toISOString(),
+        publishedBefore: now.toISOString()
+      };
+      
+      fetchVideos(query, dateFilter);
+    }
+    
     // Show/hide date inputs based on selection
     dateRadios.forEach(radio => {
       radio.addEventListener('change', () => {
@@ -179,12 +250,12 @@
         }
       });
     });
-
+    
     searchBtn.addEventListener('click', searchVideos);
     topicInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') searchVideos();
     });
-
+    
     function getDateFilter() {
       const selected = document.querySelector('input[name="dateFilter"]:checked').value;
       const now = new Date();
@@ -216,26 +287,30 @@
         };
       }
     }
-
+    
     async function searchVideos() {
       const query = topicInput.value.trim();
       if (!query) {
         alert('Please enter a topic');
         return;
       }
-
+      
       const dateFilter = getDateFilter();
       if (!dateFilter) return;
-
+      
       resultsDiv.innerHTML = '<p>Loading...</p>';
       playerDiv.innerHTML = '';
-
+      
+      fetchVideos(query, dateFilter);
+    }
+    
+    async function fetchVideos(query, dateFilter) {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(query)}&type=video&publishedAfter=${dateFilter.publishedAfter}&publishedBefore=${dateFilter.publishedBefore}&key=${API_KEY}`;
         
         const response = await fetch(url);
         const data = await response.json();
-
+        
         if (data.items && data.items.length > 0) {
           displayResults(data.items);
         } else {
@@ -246,14 +321,14 @@
         console.error('Error:', error);
       }
     }
-
+    
     function displayResults(videos) {
       resultsDiv.innerHTML = '';
       videos.forEach(video => {
         const videoId = video.id.videoId;
         const title = video.snippet.title;
         const thumbnail = video.snippet.thumbnails.medium.url;
-
+        
         const videoItem = document.createElement('div');
         videoItem.className = 'video-item';
         videoItem.innerHTML = `
@@ -264,7 +339,7 @@
         resultsDiv.appendChild(videoItem);
       });
     }
-
+    
     function playVideo(videoId) {
       playerDiv.innerHTML = `
         <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
