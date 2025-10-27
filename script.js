@@ -28,11 +28,21 @@ const youtubeInput = document.getElementById('youtube-input');
 const youtubeSearchBtn = document.getElementById('youtube-search-btn');
 const youtubeResults = document.getElementById('youtube-results');
 
+// Browser Elements (NEW!)
+const browserInput = document.getElementById('browser-input');
+const browserGoBtn = document.getElementById('browser-go-btn');
+const browserBackBtn = document.getElementById('browser-back-btn');
+const browserForwardBtn = document.getElementById('browser-forward-btn');
+const browserRefreshBtn = document.getElementById('browser-refresh-btn');
+const browserIframe = document.getElementById('browser-iframe');
+const browserResults = document.getElementById('browser-results');
+
 // Navigation
 const navBtns = document.querySelectorAll('.nav-btn');
 const chatInterface = document.getElementById('chat-interface');
 const googleSearch = document.getElementById('google-search');
 const youtubeSearch = document.getElementById('youtube-search');
+const browserTab = document.getElementById('browser-tab');
 
 // Registration
 registerForm.addEventListener('submit', (e) => {
@@ -209,6 +219,51 @@ function performYouTubeSearch() {
     }
 }
 
+// Universal Browser Functionality (NEW!)
+browserGoBtn.addEventListener('click', loadBrowserPage);
+browserInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') loadBrowserPage();
+});
+
+function loadBrowserPage() {
+    const input = browserInput.value.trim();
+    
+    if (input) {
+        let url;
+        
+        // Smart URL detection: if starts with http/https/www, treat as URL
+        if (input.startsWith('http://') || input.startsWith('https://') || input.startsWith('www.')) {
+            url = input.startsWith('www.') ? 'https://' + input : input;
+        } else {
+            // Otherwise, treat as Google search
+            url = 'https://www.google.com/search?q=' + encodeURIComponent(input);
+        }
+        
+        // Load URL in iframe
+        browserIframe.src = url;
+        browserIframe.style.display = 'block';
+        browserResults.style.display = 'block';
+    }
+}
+
+browserBackBtn.addEventListener('click', () => {
+    if (browserIframe.contentWindow) {
+        browserIframe.contentWindow.history.back();
+    }
+});
+
+browserForwardBtn.addEventListener('click', () => {
+    if (browserIframe.contentWindow) {
+        browserIframe.contentWindow.history.forward();
+    }
+});
+
+browserRefreshBtn.addEventListener('click', () => {
+    if (browserIframe.src) {
+        browserIframe.src = browserIframe.src;
+    }
+});
+
 // Navigation
 navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -220,6 +275,7 @@ navBtns.forEach(btn => {
         chatInterface.classList.remove('active-view');
         googleSearch.classList.remove('active-view');
         youtubeSearch.classList.remove('active-view');
+        browserTab.classList.remove('active-view');
         
         if (view === 'chat') {
             chatInterface.classList.add('active-view');
@@ -227,6 +283,8 @@ navBtns.forEach(btn => {
             googleSearch.classList.add('active-view');
         } else if (view === 'youtube') {
             youtubeSearch.classList.add('active-view');
+        } else if (view === 'browser') {
+            browserTab.classList.add('active-view');
         }
     });
 });
