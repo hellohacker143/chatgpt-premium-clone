@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium ChatGPT Clone</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Authentication Pages Container -->
+    <div id="auth-container" class="auth-container">
+        <!-- Registration Page -->
+        <div id="register-page" class="auth-page active">
+            <div class="auth-card">
+                <h1>Create Account</h1>
+                <form id="register-form">
+                    <input type="text" id="reg-username" placeholder="Username" required>
+                    <input type="email" id="reg-email" placeholder="Email" required>
+                    <input type="password" id="reg-password" placeholder="Password" required>
+                    <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required>
+                    <span id="password-error" class="error-message"></span>
+                    <button type="submit">Sign Up</button>
+                </form>
+                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="login-page" class="auth-page">
+            <div class="auth-card">
+                <h1>Welcome Back</h1>
+                <form id="login-form">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <span id="login-error" class="error-message"></span>
+                    <button type="submit">Login</button>
+                </form>
+                <p>Don't have an account? <a href="#" id="show-register">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="app-container hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button id="new-chat-btn" class="new-chat-btn">+ New Chat</button>
+            </div>
+            <div class="chat-history">
+                <div class="chat-item">Previous Chat 1</div>
+                <div class="chat-item">Previous Chat 2</div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span id="user-name">User</span>
+                </div>
+                <button id="logout-btn" class="logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Chat Interface -->
+            <div id="chat-interface" class="chat-interface active-view">
+                <div class="chat-header">
+                    <h2>Premium ChatGPT</h2>
+                </div>
+                <div id="chat-messages" class="chat-messages">
+                    <div class="welcome-message">
+                        <h1>How can I help you today?</h1>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <textarea id="chat-input" placeholder="Message ChatGPT..."></textarea>
+                    <button id="send-btn" class="send-btn">Send</button>
+                </div>
+            </div>
+
+            <!-- Google Search Interface -->
+            <div id="google-search" class="search-interface hidden">
+                <div class="search-header">
+                    <h2>Google Search</h2>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="google-input" placeholder="Search Google...">
+                    <button id="google-search-btn">Search</button>
+                </div>
+                <div id="google-results" class="search-results"></div>
+            </div>
+
+            <!-- YouTube Search Interface -->
+            <div id="youtube-search" class="search-interface hidden">
+                <div class="search-header">
+                    <h2>YouTube Search</h2>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="youtube-input" placeholder="Search YouTube...">
+                    <button id="youtube-search-btn">Search</button>
+                </div>
+                <div id="youtube-results" class="search-results"></div>
+            </div>
+        </main>
+
+        <!-- Navigation Bar -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-view="chat">💬 Chat</button>
+            <button class="nav-btn" data-view="google">🔍 Google</button>
+            <button class="nav-btn" data-view="youtube">▶️ YouTube</button>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
