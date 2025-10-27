@@ -1,140 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium ChatGPT Clone</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium ChatGPT Clone</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            darkBg: '#0B0F19',
+            darkCard: '#0F1629',
+            accent: { 1: '#5B8CFF', 2: '#7C3AED' }
+          },
+          boxShadow: {
+            glow: '0 0 0 1px rgba(124,58,237,0.3), 0 20px 60px rgba(124,58,237,0.2)',
+            soft: '0 10px 30px rgba(0,0,0,0.35)'
+          },
+          backgroundImage: {
+            premium: 'radial-gradient(1200px 600px at 100% -50%, rgba(124,58,237,0.25), transparent), radial-gradient(1000px 500px at -20% 120%, rgba(91,140,255,0.18), transparent)'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-    <!-- Authentication Pages Container -->
-    <div id="auth-container" class="auth-container">
-        <!-- Registration Page -->
-        <div id="register-page" class="auth-page active">
-            <div class="auth-card">
-                <h2>Create Account</h2>
-                <form id="register-form">
-                    <input type="text" id="reg-username" placeholder="Username" required>
-                    <input type="email" id="reg-email" placeholder="Email" required>
-                    <input type="password" id="reg-password" placeholder="Password" required>
-                    <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required>
-                    <span id="password-error" class="error-message"></span>
-                    <button type="submit">Sign Up</button>
-                </form>
-                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
-            </div>
-        </div>
-        <!-- Login Page -->
-        <div id="login-page" class="auth-page">
-            <div class="auth-card">
-                <h2>Welcome Back</h2>
-                <form id="login-form">
-                    <input type="email" id="login-email" placeholder="Email" required>
-                    <input type="password" id="login-password" placeholder="Password" required>
-                    <span id="login-error" class="error-message"></span>
-                    <button type="submit">Login</button>
-                </form>
-                <p>Don't have an account? <a href="#" id="show-register">Sign Up</a></p>
-            </div>
-        </div>
+<body class="min-h-screen bg-darkBg bg-premium text-white antialiased">
+  <!-- Authentication Pages -->
+  <div id="auth-container" class="auth-container">
+    <div id="register-page" class="auth-page active">
+      <div class="max-w-md mx-auto mt-16 p-8 rounded-2xl bg-darkCard/80 backdrop-blur border border-white/10 shadow-soft shadow-glow">
+        <h2 class="text-2xl font-semibold mb-6 bg-gradient-to-r from-accent-1 to-accent-2 bg-clip-text text-transparent">Create Account</h2>
+        <form id="register-form" class="space-y-4">
+          <input type="text" id="reg-username" placeholder="Username" required class="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-2/60" />
+          <input type="email" id="reg-email" placeholder="Email" required class="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-2/60" />
+          <input type="password" id="reg-password" placeholder="Password" required class="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-2/60" />
+          <input type="password" id="reg-confirm-password" placeholder="Confirm Password" required class="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-2/60" />
+          <span id="password-error" class="text-rose-400 text-sm"></span>
+          <button type="submit" class="w-full rounded-lg bg-gradient-to-r from-accent-2 to-accent-1 px-4 py-3 font-medium shadow-glow hover:opacity-95 transition">Sign Up</button>
+        </form>
+        <p class="mt-4 text-sm text-white/70">Already have an account? <a href="#" id="show-login" class="text-accent-1 hover:underline">Login</a></p>
+      </div>
     </div>
 
-    <!-- Main App Container -->
-    <div id="app-container" class="app-container hidden">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <button id="new-chat-btn" class="new-chat-btn">+ New Chat</button>
-            </div>
-            <div class="chat-history">
-                <div class="chat-item">Previous Chat 1</div>
-                <div class="chat-item">Previous Chat 2</div>
-            </div>
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <span id="user-name">User</span>
-                </div>
-                <button id="logout-btn" class="logout-btn">Logout</button>
-            </div>
-        </aside>
+    <div id="login-page" class="auth-page hidden">
+      <div class="max-w-md mx-auto mt-16 p-8 rounded-2xl bg-darkCard/80 backdrop-blur border border-white/10 shadow-soft shadow-glow">
+        <h2 class="text-2xl font-semibold mb-6 bg-gradient-to-r from-accent-1 to-accent-2 bg-clip-text text-transparent">Welcome Back</h2>
+        <form id="login-form" class="space-y-4">
+          <input type="email" id="login-email" placeholder="Email" required class="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-2/60" />
+          <input type="password" id="login-password" placeholder="Password" required class="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-2/60" />
+          <span id="login-error" class="text-rose-400 text-sm"></span>
+          <button type="submit" class="w-full rounded-lg bg-gradient-to-r from-accent-2 to-accent-1 px-4 py-3 font-medium shadow-glow hover:opacity-95 transition">Login</button>
+        </form>
+        <p class="mt-4 text-sm text-white/70">Don't have an account? <a href="#" id="show-register" class="text-accent-1 hover:underline">Sign Up</a></p>
+      </div>
+    </div>
+  </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Chat Interface -->
-            <div id="chat-interface" class="chat-interface active-view">
-                <div class="chat-header">
-                    <h2>Premium ChatGPT</h2>
-                </div>
-                <div id="chat-messages" class="chat-messages">
-                    <div class="welcome-message">
-                        <h1>How can I help you today?</h1>
-                    </div>
-                </div>
-                <div class="chat-input-container">
-                    <textarea id="chat-input" placeholder="Message ChatGPT..."></textarea>
-                    <button id="send-btn" class="send-btn">Send</button>
-                </div>
-            </div>
+  <!-- Main App -->
+  <div id="app-container" class="app-container hidden">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="hidden md:flex w-72 flex-col bg-darkCard/70 border-r border-white/10 p-4 gap-4">
+        <button id="new-chat-btn" class="w-full rounded-lg bg-gradient-to-r from-accent-2 to-accent-1 px-4 py-3 font-medium shadow-glow">+ New Chat</button>
+        <div class="space-y-2 overflow-y-auto pr-1">
+          <div class="rounded-md bg-white/5 border border-white/10 px-3 py-2">Previous Chat 1</div>
+          <div class="rounded-md bg-white/5 border border-white/10 px-3 py-2">Previous Chat 2</div>
+        </div>
+        <div class="mt-auto pt-3 border-t border-white/10 flex items-center justify-between">
+          <span id="user-name" class="text-white/80">User</span>
+          <button id="logout-btn" class="text-sm text-white/70 hover:text-white">Logout</button>
+        </div>
+      </aside>
 
-            <!-- Google Search Interface -->
-            <div id="google-search" class="search-interface hidden">
-                <div class="search-header">
-                    <h2>Google Search</h2>
-                </div>
-                <div class="search-box">
-                    <input type="text" id="google-input" placeholder="Search Google...">
-                    <button id="google-search-btn" class="premium-btn">Search Google</button>
-                </div>
-                <div id="google-results" class="search-results">
-                    <iframe id="google-iframe" class="search-iframe" style="display:none;" frameborder="0"></iframe>
-                </div>
-            </div>
+      <!-- Main Content -->
+      <main class="flex-1 p-4 md:p-8">
+        <!-- Chat Interface -->
+        <div id="chat-interface" class="active-view">
+          <div class="text-xl font-semibold mb-4 bg-gradient-to-r from-accent-1 to-accent-2 bg-clip-text text-transparent">Premium ChatGPT</div>
+          <div id="chat-messages" class="h-[55vh] rounded-2xl bg-darkCard/60 border border-white/10 shadow-soft p-4 overflow-y-auto">
+            <div class="text-white/70">How can I help you today?</div>
+          </div>
+          <div class="mt-4 flex gap-3">
+            <textarea id="chat-input" placeholder="Message ChatGPT..." class="flex-1 min-h-[52px] rounded-xl bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-2/60"></textarea>
+            <button id="send-btn" class="rounded-xl px-5 min-w-24 bg-gradient-to-r from-accent-2 to-accent-1 shadow-glow">Send</button>
+          </div>
+        </div>
 
-            <!-- YouTube Search Interface -->
-            <div id="youtube-search" class="search-interface hidden">
-                <div class="search-header">
-                    <h2>YouTube Search</h2>
-                </div>
-                <div class="search-box">
-                    <input type="text" id="youtube-input" placeholder="Search YouTube videos...">
-                    <button id="youtube-search-btn" class="premium-btn">Search YouTube</button>
-                </div>
-                <div id="youtube-results" class="search-results">
-                    <div id="youtube-video-container" style="display:none;">
-                        <iframe id="youtube-iframe" class="video-iframe" frameborder="0" allowfullscreen></iframe>
-                        <button id="close-video-btn" class="premium-btn close-btn">Close Video</button>
-                    </div>
-                    <div id="youtube-search-results"></div>
-                </div>
-            </div>
+        <!-- Google Search -->
+        <div id="google-search" class="hidden">
+          <div class="text-xl font-semibold mb-4 bg-gradient-to-r from-accent-1 to-accent-2 bg-clip-text text-transparent">Google Search</div>
+          <div class="flex gap-3 mb-3">
+            <input type="text" id="google-input" placeholder="Search Google..." class="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-1/60" />
+            <button id="google-search-btn" class="rounded-xl px-5 bg-gradient-to-r from-accent-2 to-accent-1 shadow-glow">Search Google</button>
+          </div>
+          <iframe id="google-iframe" class="hidden w-full h-[70vh] rounded-2xl bg-darkCard/60 border border-white/10 shadow-soft" frameborder="0"></iframe>
+        </div>
 
-            <!-- Browser Tab Interface (NEW!) -->
-            <div id="browser-tab" class="search-interface hidden">
-                <div class="search-header">
-                    <h2>Universal Browser</h2>
-                </div>
-                <div class="browser-controls">
-                    <input type="text" id="browser-input" placeholder="Enter URL or search term...">
-                    <button id="browser-go-btn" class="premium-btn">Go</button>
-                    <button id="browser-back-btn" class="premium-btn">← Back</button>
-                    <button id="browser-forward-btn" class="premium-btn">Forward →</button>
-                    <button id="browser-refresh-btn" class="premium-btn">⟳ Refresh</button>
-                </div>
-                <div id="browser-results" class="search-results">
-                    <iframe id="browser-iframe" class="search-iframe" frameborder="0"></iframe>
-                </div>
+        <!-- YouTube Search -->
+        <div id="youtube-search" class="hidden">
+          <div class="text-xl font-semibold mb-4 bg-gradient-to-r from-accent-1 to-accent-2 bg-clip-text text-transparent">YouTube Search</div>
+          <div class="flex gap-3 mb-3">
+            <input type="text" id="youtube-input" placeholder="Search YouTube videos..." class="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-1/60" />
+            <button id="youtube-search-btn" class="rounded-xl px-5 bg-gradient-to-r from-accent-2 to-accent-1 shadow-glow">Search YouTube</button>
+          </div>
+          <div id="youtube-results">
+            <div id="youtube-video-container" class="hidden space-y-3">
+              <iframe id="youtube-iframe" class="w-full aspect-video rounded-2xl bg-black border border-white/10 shadow-soft" frameborder="0" allowfullscreen></iframe>
+              <button id="close-video-btn" class="rounded-xl px-5 bg-white/10 hover:bg-white/15 border border-white/10">Close Video</button>
             </div>
-        </main>
+            <div id="youtube-search-results"></div>
+          </div>
+        </div>
 
-        <!-- Navigation Bar -->
-        <nav class="bottom-nav">
-            <button class="nav-btn active" data-view="chat">💬 Chat</button>
-            <button class="nav-btn" data-view="google">🔍 Google</button>
-            <button class="nav-btn" data-view="youtube">▶️ YouTube</button>
-            <button class="nav-btn" data-view="browser">🌐 Browser</button>
-        </nav>
+        <!-- Browser Tab (Redesigned) -->
+        <div id="browser-tab" class="hidden">
+          <div class="text-xl font-semibold mb-4 bg-gradient-to-r from-accent-1 to-accent-2 bg-clip-text text-transparent">Universal Browser</div>
+          <div class="flex gap-3 mb-3">
+            <input type="text" id="browser-input" placeholder="Enter URL or search term..." class="flex-1 rounded-xl bg-white/5 border border-white/10 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-1/60" />
+            <button id="browser-go-btn" class="rounded-xl px-4 bg-gradient-to-r from-accent-2 to-accent-1 shadow-glow">Go</button>
+            <button id="browser-back-btn" class="rounded-xl px-4 bg-white/10 hover:bg-white/15 border border-white/10">← Back</button>
+            <button id="browser-forward-btn" class="rounded-xl px-4 bg-white/10 hover:bg-white/15 border border-white/10">Forward →</button>
+            <button id="browser-refresh-btn" class="rounded-xl px-4 bg-white/10 hover:bg-white/15 border border-white/10">⟳ Refresh</button>
+          </div>
+          <iframe id="browser-iframe" class="w-full h-[70vh] rounded-2xl bg-darkCard/60 border border-white/10 shadow-soft" frameborder="0"></iframe>
+        </div>
+
+        <!-- Homepage Featured Section -->
+        <section class="mt-10">
+          <h3 class="text-2xl md:text-3xl font-semibold mb-5 bg-gradient-to-r from-accent-1 to-accent-2 bg-clip-text text-transparent">Featured YouTube Channels</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Video Card 1 -->
+            <article class="rounded-2xl bg-darkCard/70 border border-white/10 shadow-soft shadow-glow overflow-hidden">
+              <div class="relative">
+                <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=1&rel=0" title="Featured Channel 1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              </div>
+              <div class="p-4 flex items-center justify-between">
+                <h4 class="font-medium">Featured Channel 1</h4>
+                <div class="flex gap-2">
+                  <button data-vid="1" class="yt-toggle px-3 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-sm">Play</button>
+                  <button data-vid="1" data-action="pause" class="yt-toggle px-3 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-sm">Pause</button>
+                </div>
+              </div>
+            </article>
+            <!-- Video Card 2 -->
+            <article class="rounded-2xl bg-darkCard/70 border border-white/10 shadow-soft shadow-glow overflow-hidden">
+              <div class="relative">
+                <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1&mute=1&controls=1&rel=0" title="Featured Channel 2" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              </div>
+              <div class="p-4 flex items-center justify-between">
+                <h4 class="font-medium">Featured Channel 2</h4>
+                <div class="flex gap-2">
+                  <button data-vid="2" class="yt-toggle px-3 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-sm">Play</button>
+                  <button data-vid="2" data-action="pause" class="yt-toggle px-3 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-sm">Pause</button>
+                </div>
+              </div>
+            </article>
+          </div>
+          <p class="mt-3 text-xs text-white/50">Autoplay starts muted per browser policy; use controls to manage playback.</p>
+        </section>
+      </main>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex gap-2 bg-darkCard/80 border border-white/10 rounded-2xl p-2 backdrop-blur shadow-soft">
+      <button class="nav-btn active rounded-xl px-4 py-2 bg-gradient-to-r from-accent-2 to-accent-1 shadow-glow" data-view="chat">💬 Chat</button>
+      <button class="nav-btn rounded-xl px-4 py-2 bg-white/10 hover:bg-white/15" data-view="google">🔍 Google</button>
+      <button class="nav-btn rounded-xl px-4 py-2 bg-white/10 hover:bg-white/15" data-view="youtube">▶️ YouTube</button>
+      <button class="nav-btn rounded-xl px-4 py-2 bg-white/10 hover:bg-white/15" data-view="browser">🌐 Browser</button>
+    </nav>
+  </div>
+
+  <!-- Controls for Featured videos -->
+  <script>
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.yt-toggle');
+      if (!btn) return;
+      const idx = parseInt(btn.getAttribute('data-vid'), 10);
+      const action = btn.getAttribute('data-action') || 'play';
+      const frames = document.querySelectorAll('section iframe');
+      const frame = frames[idx - 1];
+      if (!frame) return;
+      const url = new URL(frame.src);
+      if (action === 'pause') {
+        frame.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
+      } else {
+        url.searchParams.set('autoplay', '1');
+        url.searchParams.set('mute', '0');
+        frame.src = url.toString();
+      }
+    });
+  </script>
+
+  <script src="script.js"></script>
 </body>
 </html>
