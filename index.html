@@ -15,7 +15,9 @@
     th { background:#dbeafe;}
     tr:nth-child(even) { background: #f4f8fc; }
     .player { margin-top: 35px; text-align: center; }
-    #summary-card { background: #faf0e6; padding: 18px; margin: 18px auto 0; border-radius: 10px; box-shadow: 0 2px 8px #eec; max-width:650px; }
+    #summary-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px; margin: 18px auto 0; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); max-width:700px; color: #fff; text-align: left; }
+    #summary-card h3 { color: #fff; margin-top: 0; font-size: 1.5em; border-bottom: 2px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
+    #summary-content { line-height: 1.8; font-size: 1.05em; white-space: pre-wrap; }
     #suggest-list .suggested-video { margin-bottom:10px; text-align:left;}
     #suggest-list img { border-radius:5px; margin-right:10px;}
   </style>
@@ -45,6 +47,7 @@
   </div>
   <script>
     const API_KEY = 'AIzaSyBrkLUjSB2vamhcdeXWHZsf-cZBkQ-LkPg';
+    const GEMINI_API_KEY = 'AIzaSyB2hOYT6OhVt6RfIVbU8UGpxw98a_QCcyU';
     // Setup years dropdown
     const yearSel = document.getElementById('yearPick');
     for(let y = 2015; y <= new Date().getFullYear(); y++) {
@@ -53,7 +56,6 @@
       yearSel.appendChild(opt);
     }
     yearSel.value = new Date().getFullYear();
-
     function getDates() {
       let publishedAfter = '', publishedBefore = '';
       let now = new Date(), range = 'today';
@@ -86,7 +88,6 @@
       }
       return {publishedAfter, publishedBefore};
     }
-
     function searchVideos(topic=null) {
       let q = topic || document.getElementById('query').value;
       if (!q) q = 'trending';
@@ -111,7 +112,6 @@
           }
         });
     }
-
     function showTable(items){
       let html = `<table><tr>
         <th>Thumbnail</th>
@@ -136,30 +136,54 @@
       document.getElementById('player').innerHTML = '';
       document.getElementById('suggest-list').innerHTML = '';
     }
-
-    function playVideo(vidId, title) {
+    async function playVideo(vidId, title) {
       document.getElementById('player').innerHTML = `
         <iframe width="560" height="315" src="https://www.youtube.com/embed/${vidId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         <div id="summary-card">
-          <h3>Summary / Key Points for "${title}"</h3>
-          <ul id="summary-list">
-            <li>Loading summary...</li>
-          </ul>
+          <h3>Blog Summary for "${title}"</h3>
+          <div id="summary-content">Loading summary from Gemini AI...</div>
         </div>
       `;
-      // Simulated summary (replace with API transcription/summarization)
-      setTimeout(()=>{
-        document.getElementById('summary-list').innerHTML=`
-          <li>Main topic explained in detail</li>
-          <li>Highlights and key discussions</li>
-          <li>Core conclusions</li>
-          <li>Insights for viewers</li>
-        `;
-      },1200);
       document.getElementById('suggest-list').innerHTML = '';
       document.getElementById('player').scrollIntoView({behavior:'smooth'});
+      
+      // Fetch video description from YouTube API
+      try {
+        const videoResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${vidId}&key=${API_KEY}`);
+        const videoData = await videoResponse.json();
+        
+        if (videoData.items && videoData.items.length > 0) {
+          const description = videoData.items[0].snippet.description || 'No description available.';
+          
+          // Send description to Gemini API for blog-style summary
+          const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: `Create a compelling blog-style summary based on this YouTube video information:\n\nTitle: ${title}\n\nDescription: ${description}\n\nWrite an engaging 3-4 paragraph blog summary that captures the key points, insights, and value of this video content. Make it informative and reader-friendly.`
+                }]
+              }]
+            })
+          });
+          
+          const geminiData = await geminiResponse.json();
+          
+          if (geminiData.candidates && geminiData.candidates[0]) {
+            const summary = geminiData.candidates[0].content.parts[0].text;
+            document.getElementById('summary-content').innerHTML = summary;
+          } else {
+            document.getElementById('summary-content').innerHTML = 'Unable to generate summary. Please try again.';
+          }
+        } else {
+          document.getElementById('summary-content').innerHTML = 'Video details not found.';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('summary-content').innerHTML = 'Error generating summary: ' + error.message;
+      }
     }
-
     function suggestVideos(videoId) {
       fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&relatedToVideoId=${videoId}&maxResults=5&key=${API_KEY}`)
         .then(r=>r.json())
@@ -174,12 +198,10 @@
           document.getElementById('suggest-list').innerHTML = html;
         });
     }
-
     function quickTopic(topic) {
       document.getElementById('query').value = topic;
       searchVideos(topic);
     }
-
     // set default to today
     document.getElementById('rToday').checked = true;
   </script>
